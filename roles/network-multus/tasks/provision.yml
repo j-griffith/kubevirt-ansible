@@ -10,7 +10,7 @@
   when: platform=="kubernetes"
 
 - name: Check if namespace "{{ namespace }}" exists
-  shell: "{{ cluster_command }} get ns | grep -w {{ namespace }} | awk \'{ print $1 }\'"
+  shell: "{{ cluster_command }} get ns | grep -w {{ namespace }} | awk \"{ print $1 }\""
   register: ns
 
 - name: Create {{ namespace }} namespace
@@ -74,25 +74,26 @@
     when: platform == "openshift"
   when: deploy_ovs_plugin
 
-- name: Wait until multus is running
-  shell: "{{ cluster_command }} -n {{ namespace }} get daemonset | grep {{ multus_provisioner_name }} | awk \'{ if ($3 == $4) print \"0\"; else print \"1\"}\'"
-  register: result
-  until: result.stdout == "0"
-  retries: 20
-  delay: 5
+  #- name: Wait until multus is running
+  ## This is hosed; if we do "get ds -n kbue-system" it's ready!
+  #shell: "{{ cluster_command }} -n {{ namespace }} get daemonset | grep {{ multus_provisioner_name }} | awk \"{ if ($3 == $4) print \"0\"; else print \"1\" }\""
+  #register: result
+  #until: result.stdout == "0"
+  #retries: 20
+  #delay: 5
 
-- name: Wait until CNI plugins are running
-  shell: "{{ cluster_command }} -n {{ namespace }} get daemonset | grep {{ cni_provisioner_name }} | awk \'{ if ($3 == $4) print \"0\"; else print \"1\"}\'"
-  register: result
-  until: result.stdout == "0"
-  retries: 20
-  delay: 5
-  when: deploy_cni_plugins
+  #- name: Wait until CNI plugins are running
+  #shell: "{{ cluster_command }} -n {{ namespace }} get daemonset | grep {{ cni_provisioner_name }} | awk \"{ if ($3 == $4) print \"0\"; else print \"1\" }\""
+  #register: result
+  #until: result.stdout == "0"
+  #retries: 20
+  #delay: 5
+  #when: deploy_cni_plugins
 
-- name: Wait until OVS Plugin is running
-  shell: "{{ cluster_command }} -n {{ namespace }} get daemonset | grep {{ ovs_provisioner_name }} | awk \'{ if ($3 == $4) print \"0\"; else print \"1\"}\'"
-  register: result
-  until: result.stdout == "0"
-  retries: 20
-  delay: 5
-  when: deploy_ovs_plugin
+  #- name: Wait until OVS Plugin is running
+  #shell: "{{ cluster_command }} -n {{ namespace }} get daemonset | grep {{ ovs_provisioner_name }} | awk \"{ if ($3 == $4) print \"0\"; else print \"1\" }\""
+  #register: result
+  #until: result.stdout == "0"
+  #retries: 20
+  #delay: 5
+  #when: deploy_ovs_plugin
